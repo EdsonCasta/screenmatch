@@ -1,33 +1,30 @@
-public class pelicula {
+package com.edsoncasta.screenmatch.modelos;
 
-    String nombre;
+import com.edsoncasta.ecreenmatch.calculos.Clasificacion;
 
-    int fechaLanzamiento;
+public class Pelicula extends Titulo implements Clasificacion {
 
-    int duracionEnMinutos;
+    private String director;
 
-    boolean incluidoEnElPlan;
-
-    private double sumaDeLasEvaluaciones;
-
-    private int totalDeLasEvaluaciones;
-
-    int getTotalDeLasEvaluaciones(){
-        return totalDeLasEvaluaciones;
+    public Pelicula(String nombre, int fechaLanzamiento) {
+        super(nombre, fechaLanzamiento);
     }
 
-    void muestraFichaTecnica(){
-        System.out.println("El nombre de la pelicula es: " + nombre);
-        System.out.println("Su fecha de lanzamiento es: " + fechaLanzamiento);
-        System.out.println("Duración en minutos: " + duracionEnMinutos);
+    public String getDirector() {
+        return director;
     }
 
-    void evalua(double nota){
-        sumaDeLasEvaluaciones += nota;
-        totalDeLasEvaluaciones++;
+    public void setDirector(String director) {
+        this.director = director;
     }
 
-    double calculaMedia(){
-        return sumaDeLasEvaluaciones / totalDeLasEvaluaciones;
+    @Override
+    public int getClasificacion() {
+        return (int) (calculaMedia() / 2);
+    }
+
+    @Override
+    public String toString() {
+        return "Pelicula: " + this.getNombre() + " (" + getFechaLanzamiento() + ")";
     }
 }
