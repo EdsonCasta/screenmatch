@@ -1,5 +1,6 @@
 package com.edsoncasta.principal;
 
+import com.edsoncasta.screenmatch.excepcion.ErrorEnDuracionEnMinutosException;
 import com.edsoncasta.screenmatch.modelos.Titulo;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -21,7 +22,7 @@ public class PrincipalConBusqueda {
         var busqueda = scanner.nextLine();
 
         String claveApi = "2d783b4f";
-        String url = "http://www.omdbapi.com/?t=" + busqueda + "&apikey=" + claveApi;
+        String url = "http://www.omdbapi.com/?t=" + busqueda.replace(" ", "+") + "&apikey=" + claveApi;
 
         try {
             HttpClient client = HttpClient.newHttpClient();
@@ -44,6 +45,8 @@ public class PrincipalConBusqueda {
             System.out.println(error.getMessage());
         } catch (IllegalArgumentException error){
             System.out.println("Error en la URI, Verifique la dirección.");
+        } catch (ErrorEnDuracionEnMinutosException error){
+            System.out.println(error.getMessage());
         }
         System.out.println("Finalizo la ejecucion del programa!");
     }

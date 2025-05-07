@@ -1,6 +1,7 @@
 package com.edsoncasta.screenmatch.modelos;
 
 import com.edsoncasta.principal.TituloOmdb;
+import com.edsoncasta.screenmatch.excepcion.ErrorEnDuracionEnMinutosException;
 import com.google.gson.annotations.SerializedName;
 
 public class Titulo implements Comparable<Titulo> {
@@ -22,7 +23,10 @@ public class Titulo implements Comparable<Titulo> {
     public Titulo(TituloOmdb miTituloOmdb) {
         this.nombre = miTituloOmdb.title();
         this.fechaLanzamiento = Integer.valueOf(miTituloOmdb.year());
-        this.duracionEnMinutos = Integer.valueOf(miTituloOmdb.runtime().substring(0, 2));
+        if (miTituloOmdb.runtime().contains("N/A")) {
+            throw new ErrorEnDuracionEnMinutosException("Duración en minutos No Aplica");
+        }
+        this.duracionEnMinutos = Integer.valueOf(miTituloOmdb.runtime().substring(0, 3).replace(" ", ""));
     }
 
     public int getDuracionEnMinutos() {
