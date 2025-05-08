@@ -12,6 +12,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class PrincipalConBusqueda {
@@ -19,41 +21,57 @@ public class PrincipalConBusqueda {
     public static void main(String[] args) throws IOException, InterruptedException {
 
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Escribe el nombre de la pelicula: ");
-        var busqueda = scanner.nextLine();
+        List<Titulo> titulos = new ArrayList<>();
 
-        String claveApi = "2d783b4f";
-        String url = "http://www.omdbapi.com/?t=" + busqueda.replace(" ", "+") + "&apikey=" + claveApi;
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
+                .setPrettyPrinting()
+                .create();
 
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .build();
-            HttpResponse<String> response = client
-                    .send(request, HttpResponse.BodyHandlers.ofString());
+        while (true){
+            System.out.println("Escribe el nombre de la pelicula: ");
+            var busqueda = scanner.nextLine();
 
-            String json = response.body();
-            System.out.println(json);
+            if (busqueda.equalsIgnoreCase("salir")) {
+                break;
+            }
 
-            Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
-            TituloOmdb miTituloOmdb = gson.fromJson(json, TituloOmdb.class);
-            System.out.println(miTituloOmdb);
-            Titulo miTitulo =  new Titulo(miTituloOmdb);
-            System.out.println("Titulo ya convertido: " + miTitulo);
+            String claveApi = "2d783b4f";
+            String url = "http://www.omdbapi.com/?t=" + busqueda.replace(" ", "+") + "&apikey=" + claveApi;
 
-            FileWriter escritura = new FileWriter("peliculas.txt");
-            escritura.write(miTitulo.toString());
-            escritura.close();
+            try {
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(url))
+                        .build();
+                HttpResponse<String> response = client
+                        .send(request, HttpResponse.BodyHandlers.ofString());
 
-        } catch (NumberFormatException error){
-            System.out.println("Ocurrio un error: ");
-            System.out.println(error.getMessage());
-        } catch (IllegalArgumentException error){
-            System.out.println("Error en la URI, Verifique la dirección.");
-        } catch (ErrorEnDuracionEnMinutosException error){
-            System.out.println(error.getMessage());
+                String json = response.body();
+                System.out.println(json);
+
+                TituloOmdb miTituloOmdb = gson.fromJson(json, TituloOmdb.class);
+                System.out.println(miTituloOmdb);
+                Titulo miTitulo =  new Titulo(miTituloOmdb);
+                System.out.println("Titulo ya convertido: " + miTitulo);
+
+                titulos.add(miTitulo);
+
+            } catch (NumberFormatException error){
+                System.out.println("Ocurrio un error: ");
+                System.out.println(error.getMessage());
+            } catch (IllegalArgumentException error){
+                System.out.println("Error en la URI, Verifique la dirección.");
+            } catch (ErrorEnDuracionEnMinutosException error){
+                System.out.println(error.getMessage());
+            }
         }
+        System.out.println(titulos);
+
+        FileWriter escritura = new FileWriter("titulos.json");
+        escritura.write(gson.toJson(titulos));
+        escritura.close();
+
         System.out.println("Finalizo la ejecucion del programa!");
     }
 }
