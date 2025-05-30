@@ -68,7 +68,11 @@ public class Principal {
         System.out.println("Top 5 Episodios");
         datosEpisodios.stream()
                 .filter(e -> !e.evaluacion().equalsIgnoreCase("N/A"))
+                .peek(e -> System.out.println("Primer Filtro: (N/A)" + e))
                 .sorted(Comparator.comparing(DatosEpisodio::evaluacion).reversed())
+                .peek(e -> System.out.println("Segundo Filtro ordenacion: (M>m)" + e))
+                .map(e -> e.titulo().toUpperCase())
+                .peek(e -> System.out.println("Tercer Filtro Mayúscula: (m>M)" + e))
                 .limit(5)
                 .forEach(System.out::println);
 
@@ -79,11 +83,11 @@ public class Principal {
                 .map(d -> new Episodio(t.numero(), d)))
                 .collect(Collectors.toList());
 
-        episodios.forEach(System.out::println);
+        // episodios.forEach(System.out::println);
 
         // Busqueda de eepisodios apartir de X año
 
-        System.out.println("Indica el año apartir del cual desea ver los episodios: ");
+        System.out.println("Indica a partir de que año deseas ver los episodios? ");
 
         var fecha = scanner.nextInt();
         scanner.nextLine();
@@ -92,12 +96,12 @@ public class Principal {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        episodios.stream()
-                .filter(e -> e.getFechaDeLanzamiento() != null && e.getFechaDeLanzamiento().isAfter(fechaDeBusqueda))
-                .forEach(e -> System.out.println(
-                        "Temporada: " + e.getTemporada() +
-                                ", Episodio: " + e.getTitulo() +
-                                ", Fecha de lanzamiento: " + e.getFechaDeLanzamiento().format(dtf)
-                ));
+//        episodios.stream()
+//                .filter(e -> e.getFechaDeLanzamiento() != null && e.getFechaDeLanzamiento().isAfter(fechaDeBusqueda))
+//                .forEach(e -> System.out.println(
+//                        "Temporada: " + e.getTemporada() +
+//                                ", Episodio: " + e.getTitulo() +
+//                                ", Fecha de lanzamiento: " + e.getFechaDeLanzamiento().format(dtf)
+//                ));
     }
 }
